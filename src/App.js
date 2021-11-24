@@ -1,5 +1,20 @@
-import './App.css';
+import { useRoutes } from 'react-router-dom';
+import { ThemeProvider, StyledEngineProvider } from '@mui/material';
+import GlobalStyles from './components/GlobalStyles';
+import theme from './theme';
+import routes from './routes';
 
-const App = () => <div className="App">Hello World </div>;
+const App = () => {
+  const content = useRoutes(routes);
+
+  return (
+    <StyledEngineProvider injectFirst>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        {content}
+      </ThemeProvider>
+    </StyledEngineProvider>
+  );
+};
 
 export default App;
