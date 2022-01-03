@@ -26,6 +26,8 @@
     "react/require-default-props": "off",
     "no-unsafe-optional-chaining": "off",
     "no-nonoctal-decimal-escape": "off",
+    "no-nested-ternary": "off",
+    "no-underscore-dangle": "off",
     "react/function-component-definition": [
       2,
       {

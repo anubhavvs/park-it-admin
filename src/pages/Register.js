@@ -1,21 +1,14 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import {
-  Box,
-  Container,
-  Typography,
-  Button,
-  TextField,
-  CircularProgress,
-  Backdrop
-} from '@mui/material';
+import { Box, Container, Typography, Button, TextField } from '@mui/material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import { register } from '../actions/userActions';
 import { USER_REGISTER_RESET } from '../constants/userConstants';
+import Loader from '../components/Loader';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -67,12 +60,7 @@ const Register = () => {
       <Helmet>
         <title>Register | Park It</title>
       </Helmet>
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading || loadingUserCreate || false}
-      >
-        <CircularProgress color="primary" />
-      </Backdrop>
+      <Loader loading={loadingUserCreate || loading} />
       <Box
         sx={{
           backgroundColor: 'background.default',

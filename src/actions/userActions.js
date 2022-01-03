@@ -8,6 +8,7 @@ import {
   USER_REGISTER_SUCCESS,
   USER_REGISTER_FAIL
 } from '../constants/userConstants';
+import { CUSTOMER_LIST_RESET } from '../constants/customerConstants';
 import URL from '../config';
 
 export const login = (email, password) => async (dispatch) => {
@@ -48,6 +49,7 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch({ type: USER_LOGOUT });
+  dispatch({ type: CUSTOMER_LIST_RESET });
 };
 
 export const register = (name, email, number, password) => async (dispatch, getState) => {

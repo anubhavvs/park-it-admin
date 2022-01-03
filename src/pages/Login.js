@@ -5,16 +5,9 @@ import { Helmet } from 'react-helmet';
 import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import {
-  Container,
-  Box,
-  Typography,
-  TextField,
-  Button,
-  CircularProgress,
-  Backdrop
-} from '@mui/material';
+import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import { login } from '../actions/userActions';
+import Loader from '../components/Loader';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -49,9 +42,7 @@ const Login = () => {
       <Helmet>
         <title>Admin Login | Park It</title>
       </Helmet>
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
-        <CircularProgress color="primary" />
-      </Backdrop>
+      <Loader loading={loading} />
       <Box
         sx={{
           backgroundColor: 'background.default',

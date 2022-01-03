@@ -6,6 +6,7 @@ import DashboardLayout from './components/DashboardLayout';
 import Account from './pages/Account';
 import Area from './pages/Area';
 import Register from './pages/Register';
+import User from './pages/User';
 
 const routes = [
   {
@@ -13,6 +14,7 @@ const routes = [
     element: <DashboardLayout />,
     children: [
       { path: 'customer', element: <Customer /> },
+      { path: 'customer/:id', element: <User /> },
       { path: 'account', element: <Account /> },
       { path: 'area', element: <Area /> },
       { path: 'register', element: <Register /> }
