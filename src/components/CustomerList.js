@@ -67,7 +67,7 @@ const CustomerList = ({ customers, ...rest }) => {
                 </TableCell>
                 <TableCell>{customer.email}</TableCell>
                 <TableCell>{customer.number}</TableCell>
-                <TableCell>{customer.plate}</TableCell>
+                <TableCell>{customer.plate.toUpperCase()}</TableCell>
                 <TableCell align="center">
                   {moment(customer.createdAt).format("Do MMM 'YY")}
                 </TableCell>
