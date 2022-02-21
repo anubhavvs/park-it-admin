@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 
-const CustomerList = ({ customers, ...rest }) => {
+const CustomerList = ({ customers, handleStatusChange, updatedCustomer, ...rest }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(9);
 
@@ -31,6 +31,14 @@ const CustomerList = ({ customers, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+
+  if (updatedCustomer) {
+    customers.forEach((customer) => {
+      if (customer._id === updatedCustomer._id) {
+        customer.activeBooking = updatedCustomer.activeBooking; // eslint-disable-line no-param-reassign
+      }
+    });
+  }
 
   return (
     <Card {...rest}>
@@ -73,7 +81,11 @@ const CustomerList = ({ customers, ...rest }) => {
                 </TableCell>
                 <TableCell align="center">{moment(customer.createdAt).format('hh:mm A')}</TableCell>
                 <TableCell align="center">
-                  <Switch checked={customer.activeBooking} size="small" />
+                  <Switch
+                    checked={customer.activeBooking}
+                    onClick={() => handleStatusChange(customer._id)}
+                    size="small"
+                  />
                 </TableCell>
                 <TableCell align="center">
                   <IconButton
@@ -106,7 +118,8 @@ const CustomerList = ({ customers, ...rest }) => {
 
 CustomerList.propTypes = {
   customers: PropTypes.array.isRequired,
-  switchHandler: PropTypes.func
+  handleStatusChange: PropTypes.func,
+  updatedCustomer: PropTypes.any
 };
 
 export default CustomerList;

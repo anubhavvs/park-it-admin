@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 import { useSnackbar } from 'notistack';
 import CustomerList from '../components/CustomerList';
 import Loader from '../components/Loader';
-import { listCustomer } from '../actions/customerActions';
+import { listCustomer, updateCustomerStatus } from '../actions/customerActions';
 
 const Customer = () => {
   const navigate = useNavigate();
@@ -16,6 +16,9 @@ const Customer = () => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const customerStatusUpdate = useSelector((state) => state.customerStatusUpdate);
+  const { success: statusSuccess, result: statusResult, error: statusError } = customerStatusUpdate;
 
   const { enqueueSnackbar } = useSnackbar();
   const handleClick = (variant, message) => {
@@ -36,6 +39,18 @@ const Customer = () => {
     }
   }, [customerError]);
 
+  useEffect(() => {
+    if (statusError) {
+      handleClick('error', statusError);
+    } else if (statusSuccess) {
+      handleClick('success', 'User status updated.');
+    }
+  });
+
+  const handleStatusUpdate = (id) => {
+    dispatch(updateCustomerStatus(id));
+  };
+
   return (
     <>
       <Helmet>
@@ -53,7 +68,11 @@ const Customer = () => {
             {customerLoading ? (
               <Loader loading={customerLoading} />
             ) : customerError ? null : (
-              <CustomerList customers={customers.filter((obj) => obj.isAdmin !== true)} />
+              <CustomerList
+                customers={customers.filter((obj) => obj.isAdmin !== true)}
+                handleStatusChange={handleStatusUpdate}
+                updatedCustomer={statusResult}
+              />
             )}
           </Box>
         </Container>
