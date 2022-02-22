@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import CustomerList from '../components/CustomerList';
 import Loader from '../components/Loader';
 import { listCustomer, updateCustomerStatus } from '../actions/customerActions';
+import { CUSTOMER_STATUS_UPDATE_RESET } from '../constants/customerConstants';
 
 const Customer = () => {
   const navigate = useNavigate();
@@ -42,10 +43,12 @@ const Customer = () => {
   useEffect(() => {
     if (statusError) {
       handleClick('error', statusError);
+      dispatch({ type: CUSTOMER_STATUS_UPDATE_RESET });
     } else if (statusSuccess) {
       handleClick('success', 'User status updated.');
+      dispatch({ type: CUSTOMER_STATUS_UPDATE_RESET });
     }
-  });
+  }, [statusError, statusSuccess]);
 
   const handleStatusUpdate = (id) => {
     dispatch(updateCustomerStatus(id));
