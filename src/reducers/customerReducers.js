@@ -14,7 +14,11 @@ import {
   CUSTOMER_UPDATE_REQUEST,
   CUSTOMER_UPDATE_SUCCESS,
   CUSTOMER_UPDATE_RESET,
-  CUSTOMER_UPDATE_FAIL
+  CUSTOMER_UPDATE_FAIL,
+  CUSTOMER_DELETE_REQUEST,
+  CUSTOMER_DELETE_SUCCESS,
+  CUSTOMER_DELETE_FAIL,
+  CUSTOMER_DELETE_RESET
 } from '../constants/customerConstants';
 
 export const customerListReducer = (state = { customers: [] }, action = {}) => {
@@ -50,20 +54,11 @@ export const customerDetailReducer = (state = { customer: {} }, action = {}) => 
 export const customerStatusUpdateReducer = (state = {}, action = {}) => {
   switch (action.type) {
     case CUSTOMER_STATUS_UPDATE_REQUEST:
-      return {
-        loading: true
-      };
+      return { loading: true };
     case CUSTOMER_STATUS_UPDATE_SUCCESS:
-      return {
-        loading: false,
-        success: true,
-        result: action.payload
-      };
+      return { loading: false, success: true, result: action.payload };
     case CUSTOMER_STATUS_UPDATE_FAIL:
-      return {
-        loading: false,
-        error: action.payload
-      };
+      return { loading: false, error: action.payload };
     case CUSTOMER_STATUS_UPDATE_RESET:
       return {};
     default:
@@ -81,6 +76,21 @@ export const customerUpdateReducer = (state = { customer: {} }, action = {}) => 
       return { loading: false, error: action.payload };
     case CUSTOMER_UPDATE_RESET:
       return { customer: {} };
+    default:
+      return state;
+  }
+};
+
+export const customerDeleteReducer = (state = {}, action = {}) => {
+  switch (action.type) {
+    case CUSTOMER_DELETE_REQUEST:
+      return { loading: true };
+    case CUSTOMER_DELETE_SUCCESS:
+      return { loading: false, success: true };
+    case CUSTOMER_DELETE_FAIL:
+      return { loading: false, error: action.payload };
+    case CUSTOMER_DELETE_RESET:
+      return {};
     default:
       return state;
   }

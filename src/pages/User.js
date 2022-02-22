@@ -1,6 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Box, Container, Avatar, Typography, Stack, Grid, Button, TextField } from '@mui/material';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Container,
+  Avatar,
+  Typography,
+  Stack,
+  Grid,
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
@@ -9,9 +23,9 @@ import { Delete, Edit, Close, Done, ArrowBack } from '@mui/icons-material';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
-import { getCustomerDetail, updateCustomer } from '../actions/customerActions';
+import { getCustomerDetail, updateCustomer, deleteCustomer } from '../actions/customerActions';
 import Loader from '../components/Loader';
-import { CUSTOMER_UPDATE_RESET } from '../constants/customerConstants';
+import { CUSTOMER_UPDATE_RESET, CUSTOMER_DELETE_RESET } from '../constants/customerConstants';
 
 const Item = ({ data }) => {
   return (
@@ -28,15 +42,14 @@ Item.propTypes = {
 const useStyles = makeStyles(() => ({
   inputRoot: {
     '& input.Mui-disabled': {
-      WebkitTextFillColor: 'black',
-      userSelect: 'none'
+      WebkitTextFillColor: 'black'
     }
   }
 }));
 
 const User = () => {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [url, setUrl] = useState('');
   const classes = useStyles();
@@ -47,7 +60,11 @@ const User = () => {
   const customerUpdate = useSelector((state) => state.customerUpdate);
   const { error: updateError, success } = customerUpdate;
 
+  const customerDelete = useSelector((state) => state.customerDelete);
+  const { success: deleteSuccess, error: deleteError } = customerDelete;
+
   const [editToggle, setEditToggle] = useState(false);
+  const [deleteDialogToggle, setDeleteDialogToggle] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
   const handleClick = (variant, message) => {
@@ -79,6 +96,16 @@ const User = () => {
     }
   }, [error, updateError, success]);
 
+  useEffect(() => {
+    if (deleteSuccess) {
+      handleClick('success', 'User data deleted.');
+      navigate('/app/customer');
+      dispatch({ type: CUSTOMER_DELETE_RESET });
+    } else if (deleteError) {
+      handleClick('error', deleteError);
+    }
+  }, [deleteError, deleteSuccess]);
+
   const schema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Must be a valid email'),
     name: Yup.string().required('Name is required'),
@@ -87,6 +114,10 @@ const User = () => {
       .matches(/^[6-9]\d{9}$/, 'Must be a valid number'),
     plate: Yup.string().required('Plate is required')
   });
+
+  const deleteHandler = () => {
+    dispatch(deleteCustomer(id));
+  };
 
   return (
     <>
@@ -183,7 +214,6 @@ const User = () => {
                             }}
                           >
                             <TextField
-                              onDoubleClick={() => setEditToggle(true)}
                               error={Boolean(touched.name && errors.name)}
                               helperText={touched.name && errors.name}
                               name="name"
@@ -214,7 +244,6 @@ const User = () => {
                             }}
                           >
                             <TextField
-                              onDoubleClick={() => setEditToggle(true)}
                               error={Boolean(touched.email && errors.email)}
                               helperText={touched.email && errors.email}
                               name="email"
@@ -245,7 +274,6 @@ const User = () => {
                             }}
                           >
                             <TextField
-                              onDoubleClick={() => setEditToggle(true)}
                               error={Boolean(touched.number && errors.number)}
                               helperText={touched.number && errors.number}
                               name="number"
@@ -276,7 +304,6 @@ const User = () => {
                             }}
                           >
                             <TextField
-                              onDoubleClick={() => setEditToggle(true)}
                               error={Boolean(touched.plate && errors.plate)}
                               helperText={touched.plate && errors.plate}
                               name="plate"
@@ -343,6 +370,7 @@ const User = () => {
                           size="large"
                           color="error"
                           startIcon={<Delete />}
+                          onClick={() => setDeleteDialogToggle(true)}
                         >
                           Delete
                         </Button>
@@ -355,6 +383,27 @@ const User = () => {
           )}
         </Container>
       </Box>
+      <Dialog
+        open={deleteDialogToggle}
+        onClose={() => setDeleteDialogToggle(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" sx={{ fontSize: '20px' }}>
+          Are you sure?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            All the data will be removed from the database permanently for this user.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialogToggle(false)}>Cancel</Button>
+          <Button onClick={() => deleteHandler()} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
