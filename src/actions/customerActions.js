@@ -8,7 +8,10 @@ import {
   CUSTOMER_DETAILS_FAIL,
   CUSTOMER_STATUS_UPDATE_REQUEST,
   CUSTOMER_STATUS_UPDATE_SUCCESS,
-  CUSTOMER_STATUS_UPDATE_FAIL
+  CUSTOMER_STATUS_UPDATE_FAIL,
+  CUSTOMER_UPDATE_REQUEST,
+  CUSTOMER_UPDATE_SUCCESS,
+  CUSTOMER_UPDATE_FAIL
 } from '../constants/customerConstants';
 import URL from '../config';
 
@@ -99,6 +102,34 @@ export const updateCustomerStatus = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: CUSTOMER_STATUS_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.message ? error.response.data.message : error.message
+    });
+  }
+};
+
+export const updateCustomer = (user) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: CUSTOMER_UPDATE_REQUEST });
+
+    const {
+      userLogin: { userInfo }
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    };
+
+    const { data } = await axios.put(`${URL}/users/${user._id}`, user, config);
+
+    dispatch({ type: CUSTOMER_UPDATE_SUCCESS });
+
+    dispatch({ type: CUSTOMER_DETAILS_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: CUSTOMER_UPDATE_FAIL,
       payload:
         error.response && error.response.data.message ? error.response.data.message : error.message
     });

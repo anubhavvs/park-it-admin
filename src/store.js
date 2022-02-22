@@ -5,7 +5,8 @@ import { userLoginReducer, userRegisterReducer } from './reducers/userReducers';
 import {
   customerListReducer,
   customerDetailReducer,
-  customerStatusUpdateReducer
+  customerStatusUpdateReducer,
+  customerUpdateReducer
 } from './reducers/customerReducers';
 
 const reducer = combineReducers({
@@ -13,7 +14,8 @@ const reducer = combineReducers({
   userRegister: userRegisterReducer,
   customerList: customerListReducer,
   customerDetails: customerDetailReducer,
-  customerStatusUpdate: customerStatusUpdateReducer
+  customerStatusUpdate: customerStatusUpdateReducer,
+  customerUpdate: customerUpdateReducer
 });
 const middleware = [thunk];
 
