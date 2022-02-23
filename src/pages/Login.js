@@ -40,7 +40,7 @@ const Login = () => {
   return (
     <>
       <Helmet>
-        <title>Admin Login | Park It</title>
+        <title>Login | Park It</title>
       </Helmet>
       <Loader loading={loading} />
       <Box

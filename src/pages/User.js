@@ -54,6 +54,9 @@ const User = () => {
   const [url, setUrl] = useState('');
   const classes = useStyles();
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const customerDetails = useSelector((state) => state.customerDetails);
   const { loading, error, customer } = customerDetails;
 
@@ -72,16 +75,20 @@ const User = () => {
   };
 
   useEffect(() => {
-    if (!customer.name || customer._id !== id || success) {
-      dispatch(getCustomerDetail(id));
+    if (userInfo) {
+      if (!customer.name || customer._id !== id || success) {
+        dispatch(getCustomerDetail(id));
+      } else {
+        setUrl(
+          `https://avatars.dicebear.com/api/avataaars/${
+            customer.name.split(' ')[0]
+          }.svg?background=%235664d2`
+        );
+      }
     } else {
-      setUrl(
-        `https://avatars.dicebear.com/api/avataaars/${
-          customer.name.split(' ')[0]
-        }.svg?background=%235664d2`
-      );
+      navigate('/login', { replace: true });
     }
-  }, [dispatch, customer, id, success]);
+  }, [dispatch, customer, id, success, userInfo]);
 
   useEffect(() => {
     if (error) {
@@ -122,7 +129,7 @@ const User = () => {
   return (
     <>
       <Helmet>
-        <title>Customers</title>
+        <title>Customers | {customer.name}</title>
       </Helmet>
       <Box
         sx={{
